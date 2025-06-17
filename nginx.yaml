@@ -1,0 +1,33 @@
+---
+- name: Install and run Nginx
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
+    - name: Create a simple web page
+      copy:
+        content: |
+          <html>
+          <head>
+            <title>Ansible Nginx</title>
+          </head>
+          <body>
+            <h1>Hello from Ansible managed EC2 instance!</h1>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
